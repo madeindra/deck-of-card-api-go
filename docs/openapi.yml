@@ -1,0 +1,564 @@
+---
+openapi: 3.0.3
+info:
+  title: Deck of Cards
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: "http://localhost:8080"
+paths:
+  /v1/decks:
+    post:
+      summary: Create a Deck of Cards
+      description: Create a Deck of Cards
+      operationId: createADeckOfCards
+      parameters:
+        - name: shuffled
+          in: query
+          schema:
+            type: string
+            example: "true"
+          description: "optional, default false, boolean"
+        - name: cards
+          in: query
+          schema:
+            type: string
+          description: "optional, comma separated string of card code (a combinaton of 2-3 char of value [2-10/A/J/Q/K] and suit [H/D/S/C])"
+      responses:
+        "201":
+          description: 201 Created
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: "81"
+            Date:
+              schema:
+                type: string
+                example: "Wed, 27 Jul 2022 10:20:07 GMT"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deck_id:
+                    type: string
+                    example: 72b81cb2-6450-42b9-8830-7b120e01e312
+                  remaining:
+                    type: number
+                    example: 52
+                  shuffled:
+                    type: boolean
+                    example: true
+              examples:
+                201 Created:
+                  value:
+                    deck_id: 72b81cb2-6450-42b9-8830-7b120e01e312
+                    remaining: 52
+                    shuffled: true
+  "/v1/decks/{uuid}":
+    get:
+      summary: Find Deck by Id
+      description: Find Deck by Id
+      operationId: findDeckById
+      responses:
+        "200":
+          description: 200 OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: "Wed, 27 Jul 2022 10:23:21 GMT"
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: 9H
+                        suit:
+                          type: string
+                          example: HEARTS
+                        value:
+                          type: string
+                          example: "9"
+                    example:
+                      - code: 9H
+                        suit: HEARTS
+                        value: "9"
+                      - code: 6S
+                        suit: SPADES
+                        value: "6"
+                      - code: AD
+                        suit: DIAMONDS
+                        value: ACE
+                      - code: 3H
+                        suit: HEARTS
+                        value: "3"
+                      - code: 2S
+                        suit: SPADES
+                        value: "2"
+                      - code: 10D
+                        suit: DIAMONDS
+                        value: "10"
+                      - code: 9D
+                        suit: DIAMONDS
+                        value: "9"
+                      - code: 3C
+                        suit: CLUBS
+                        value: "3"
+                      - code: 6C
+                        suit: CLUBS
+                        value: "6"
+                      - code: 8D
+                        suit: DIAMONDS
+                        value: "8"
+                      - code: 9S
+                        suit: SPADES
+                        value: "9"
+                      - code: 4C
+                        suit: CLUBS
+                        value: "4"
+                      - code: AS
+                        suit: SPADES
+                        value: ACE
+                      - code: 7S
+                        suit: SPADES
+                        value: "7"
+                      - code: 7D
+                        suit: DIAMONDS
+                        value: "7"
+                      - code: KC
+                        suit: CLUBS
+                        value: KING
+                      - code: 2C
+                        suit: CLUBS
+                        value: "2"
+                      - code: 5C
+                        suit: CLUBS
+                        value: "5"
+                      - code: 8C
+                        suit: CLUBS
+                        value: "8"
+                      - code: 9C
+                        suit: CLUBS
+                        value: "9"
+                      - code: AH
+                        suit: HEARTS
+                        value: ACE
+                      - code: 5D
+                        suit: DIAMONDS
+                        value: "5"
+                      - code: 6D
+                        suit: DIAMONDS
+                        value: "6"
+                      - code: 8S
+                        suit: SPADES
+                        value: "8"
+                      - code: JC
+                        suit: CLUBS
+                        value: JACK
+                      - code: KH
+                        suit: HEARTS
+                        value: KING
+                      - code: 3S
+                        suit: SPADES
+                        value: "3"
+                      - code: JH
+                        suit: HEARTS
+                        value: JACK
+                      - code: QC
+                        suit: CLUBS
+                        value: QUEEN
+                      - code: JD
+                        suit: DIAMONDS
+                        value: JACK
+                      - code: AC
+                        suit: CLUBS
+                        value: ACE
+                      - code: KS
+                        suit: SPADES
+                        value: KING
+                      - code: 7H
+                        suit: HEARTS
+                        value: "7"
+                      - code: 6H
+                        suit: HEARTS
+                        value: "6"
+                      - code: 7C
+                        suit: CLUBS
+                        value: "7"
+                      - code: 10H
+                        suit: HEARTS
+                        value: "10"
+                      - code: QH
+                        suit: HEARTS
+                        value: QUEEN
+                      - code: 10C
+                        suit: CLUBS
+                        value: "10"
+                      - code: 2D
+                        suit: DIAMONDS
+                        value: "2"
+                      - code: 2H
+                        suit: HEARTS
+                        value: "2"
+                      - code: 4H
+                        suit: HEARTS
+                        value: "4"
+                      - code: 5S
+                        suit: SPADES
+                        value: "5"
+                      - code: 3D
+                        suit: DIAMONDS
+                        value: "3"
+                      - code: 8H
+                        suit: HEARTS
+                        value: "8"
+                      - code: QD
+                        suit: DIAMONDS
+                        value: QUEEN
+                      - code: 4D
+                        suit: DIAMONDS
+                        value: "4"
+                      - code: JS
+                        suit: SPADES
+                        value: JACK
+                      - code: KD
+                        suit: DIAMONDS
+                        value: KING
+                      - code: 4S
+                        suit: SPADES
+                        value: "4"
+                      - code: QS
+                        suit: SPADES
+                        value: QUEEN
+                      - code: 10S
+                        suit: SPADES
+                        value: "10"
+                      - code: 5H
+                        suit: HEARTS
+                        value: "5"
+                  deck_id:
+                    type: string
+                    example: 72b81cb2-6450-42b9-8830-7b120e01e312
+                  remaining:
+                    type: number
+                    example: 52
+                  shuffled:
+                    type: boolean
+                    example: true
+              examples:
+                200 OK:
+                  value:
+                    cards:
+                      - code: 9H
+                        suit: HEARTS
+                        value: "9"
+                      - code: 6S
+                        suit: SPADES
+                        value: "6"
+                      - code: AD
+                        suit: DIAMONDS
+                        value: ACE
+                      - code: 3H
+                        suit: HEARTS
+                        value: "3"
+                      - code: 2S
+                        suit: SPADES
+                        value: "2"
+                      - code: 10D
+                        suit: DIAMONDS
+                        value: "10"
+                      - code: 9D
+                        suit: DIAMONDS
+                        value: "9"
+                      - code: 3C
+                        suit: CLUBS
+                        value: "3"
+                      - code: 6C
+                        suit: CLUBS
+                        value: "6"
+                      - code: 8D
+                        suit: DIAMONDS
+                        value: "8"
+                      - code: 9S
+                        suit: SPADES
+                        value: "9"
+                      - code: 4C
+                        suit: CLUBS
+                        value: "4"
+                      - code: AS
+                        suit: SPADES
+                        value: ACE
+                      - code: 7S
+                        suit: SPADES
+                        value: "7"
+                      - code: 7D
+                        suit: DIAMONDS
+                        value: "7"
+                      - code: KC
+                        suit: CLUBS
+                        value: KING
+                      - code: 2C
+                        suit: CLUBS
+                        value: "2"
+                      - code: 5C
+                        suit: CLUBS
+                        value: "5"
+                      - code: 8C
+                        suit: CLUBS
+                        value: "8"
+                      - code: 9C
+                        suit: CLUBS
+                        value: "9"
+                      - code: AH
+                        suit: HEARTS
+                        value: ACE
+                      - code: 5D
+                        suit: DIAMONDS
+                        value: "5"
+                      - code: 6D
+                        suit: DIAMONDS
+                        value: "6"
+                      - code: 8S
+                        suit: SPADES
+                        value: "8"
+                      - code: JC
+                        suit: CLUBS
+                        value: JACK
+                      - code: KH
+                        suit: HEARTS
+                        value: KING
+                      - code: 3S
+                        suit: SPADES
+                        value: "3"
+                      - code: JH
+                        suit: HEARTS
+                        value: JACK
+                      - code: QC
+                        suit: CLUBS
+                        value: QUEEN
+                      - code: JD
+                        suit: DIAMONDS
+                        value: JACK
+                      - code: AC
+                        suit: CLUBS
+                        value: ACE
+                      - code: KS
+                        suit: SPADES
+                        value: KING
+                      - code: 7H
+                        suit: HEARTS
+                        value: "7"
+                      - code: 6H
+                        suit: HEARTS
+                        value: "6"
+                      - code: 7C
+                        suit: CLUBS
+                        value: "7"
+                      - code: 10H
+                        suit: HEARTS
+                        value: "10"
+                      - code: QH
+                        suit: HEARTS
+                        value: QUEEN
+                      - code: 10C
+                        suit: CLUBS
+                        value: "10"
+                      - code: 2D
+                        suit: DIAMONDS
+                        value: "2"
+                      - code: 2H
+                        suit: HEARTS
+                        value: "2"
+                      - code: 4H
+                        suit: HEARTS
+                        value: "4"
+                      - code: 5S
+                        suit: SPADES
+                        value: "5"
+                      - code: 3D
+                        suit: DIAMONDS
+                        value: "3"
+                      - code: 8H
+                        suit: HEARTS
+                        value: "8"
+                      - code: QD
+                        suit: DIAMONDS
+                        value: QUEEN
+                      - code: 4D
+                        suit: DIAMONDS
+                        value: "4"
+                      - code: JS
+                        suit: SPADES
+                        value: JACK
+                      - code: KD
+                        suit: DIAMONDS
+                        value: KING
+                      - code: 4S
+                        suit: SPADES
+                        value: "4"
+                      - code: QS
+                        suit: SPADES
+                        value: QUEEN
+                      - code: 10S
+                        suit: SPADES
+                        value: "10"
+                      - code: 5H
+                        suit: HEARTS
+                        value: "5"
+                    deck_id: 72b81cb2-6450-42b9-8830-7b120e01e312
+                    remaining: 52
+                    shuffled: true
+        "400":
+          description: 400 Bad Request
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: "33"
+            Date:
+              schema:
+                type: string
+                example: "Wed, 27 Jul 2022 10:23:39 GMT"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Unable to find deck
+              examples:
+                400 Bad Request:
+                  value:
+                    Message: Unable to find deck
+    parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+          example: 72b81cb2-6450-42b9-8830-7b120e01e312
+        description: "required, uuid"
+  "/v1/decks/{uuid}/draw":
+    get:
+      summary: Draw Cards from a Deck
+      description: Draw Cards from a Deck
+      operationId: drawCardsFromADeck
+      parameters:
+        - name: count
+          in: query
+          schema:
+            type: string
+            example: "5"
+          description: "required, int"
+      responses:
+        "200":
+          description: 200 OK
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: "225"
+            Date:
+              schema:
+                type: string
+                example: "Wed, 27 Jul 2022 10:27:20 GMT"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: 9H
+                        suit:
+                          type: string
+                          example: HEARTS
+                        value:
+                          type: string
+                          example: "9"
+                    example:
+                      - code: 9H
+                        suit: HEARTS
+                        value: "9"
+                      - code: 6S
+                        suit: SPADES
+                        value: "6"
+                      - code: AD
+                        suit: DIAMONDS
+                        value: ACE
+                      - code: 3H
+                        suit: HEARTS
+                        value: "3"
+                      - code: 2S
+                        suit: SPADES
+                        value: "2"
+              examples:
+                200 OK:
+                  value:
+                    cards:
+                      - code: 9H
+                        suit: HEARTS
+                        value: "9"
+                      - code: 6S
+                        suit: SPADES
+                        value: "6"
+                      - code: AD
+                        suit: DIAMONDS
+                        value: ACE
+                      - code: 3H
+                        suit: HEARTS
+                        value: "3"
+                      - code: 2S
+                        suit: SPADES
+                        value: "2"
+        "400":
+          description: 400 Bad Request
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: "33"
+            Date:
+              schema:
+                type: string
+                example: "Wed, 27 Jul 2022 10:26:48 GMT"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    type: string
+                    example: Invalid draw amount
+              examples:
+                400 Bad Request:
+                  value:
+                    Message: Invalid draw amount
+    parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+          example: 72b81cb2-6450-42b9-8830-7b120e01e312
+        description: "required, uuid"
+tags: []
