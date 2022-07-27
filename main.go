@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	
+
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
+	"github.com/madeindra/toggl-test/api/v1/deck"
 	"github.com/madeindra/toggl-test/internal/config"
+	"github.com/madeindra/toggl-test/internal/constant"
 )
 
 func main() {
@@ -32,10 +35,14 @@ func main() {
 
 	// initialize dependencies
 	router := mux.NewRouter()
+	validator := validator.New()
 
-	// TODO: repository and usecase
+	// repository and usecase
+	deckRepo := deck.NewDeckRepo(db, constant.TableDeck, constant.TableCards)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
-	// TODO: router and handler mapping
+	// router and handler mapping
+	deck.NewDeckHandler(router, validator, deckUsecase)
 
 	// initialize server
 	server := &http.Server{
