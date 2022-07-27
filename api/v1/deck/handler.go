@@ -62,7 +62,11 @@ func (handler *DeckHandler) Draw(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	uuid := mux.Vars(r)["uuid"]
-	result := handler.Usecase.Draw(ctx, uuid)
+
+	countParam := r.URL.Query().Get("count")
+	count, _ := strconv.Atoi(countParam)
+
+	result := handler.Usecase.Draw(ctx, uuid, count)
 
 	response.JSON(w, result)
 }

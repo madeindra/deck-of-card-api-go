@@ -14,7 +14,8 @@ type (
 		CreateCards(ctx context.Context, deckUUID string, cards []Card) error
 		FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error)
 		FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error)
-		Update(ctx context.Context, deckUUID string, count int) error
+		FindCardsWithLimit(ctx context.Context, deckUUID string, count int) ([]CardData, error)
+		DeleteCards(ctx context.Context, uuids []string) error
 	}
 
 	deckRepoImpl struct {
@@ -52,7 +53,6 @@ func (repo *deckRepoImpl) CreateDeck(ctx context.Context, deck Deck) error {
 		return err
 	}
 
-	// return data
 	return nil
 }
 
@@ -89,7 +89,6 @@ func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, card
 		return err
 	}
 
-	// return data
 	return nil
 }
 
@@ -158,6 +157,78 @@ func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string
 	return cardData, nil
 }
 
-func (repo *deckRepoImpl) Update(ctx context.Context, deckUUID string, count int) error {
+func (repo *deckRepoImpl) FindCardsWithLimit(ctx context.Context, deckUUID string, count int) ([]CardData, error) {
+	cardData := []CardData{}
+
+	// get deck by id
+	query := fmt.Sprintf("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1 LIMIT %d", repo.tableCard, count)
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return cardData, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.QueryContext(ctx, deckUUID)
+	if err != nil {
+		return cardData, err
+	}
+
+	// map data to struct
+	for rows.Next() {
+		card := CardData{}
+		err = rows.Scan(
+			&card.uuid,
+			&card.deck_uuid,
+			&card.value,
+			&card.suit,
+			&card.code,
+		)
+
+		if err != nil {
+			return cardData, err
+		}
+
+		cardData = append(cardData, card)
+	}
+
+	// return data
+	return cardData, nil
+}
+
+func (repo *deckRepoImpl) DeleteCards(ctx context.Context, uuids []string) error {
+	// delete cards
+	query := fmt.Sprintf("DELETE FROM %s WHERE uuid IN (", repo.tableCard)
+
+	// loop all uuids
+	values := []interface{}{}
+	for idx, uuid := range uuids {
+		query += fmt.Sprintf("$%d", idx+1)
+
+		// if not last value, append comma, else append parentheses
+		if idx < len(uuids)-1 {
+			query += ","
+		} else {
+			query += ")"
+		}
+
+		values = append(values, uuid)
+	}
+
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// delete cards with uuids
+	_, err = stmt.ExecContext(
+		ctx,
+		values...,
+	)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

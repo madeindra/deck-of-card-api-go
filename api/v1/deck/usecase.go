@@ -11,7 +11,7 @@ import (
 type DeckUsecase interface {
 	Create(ctx context.Context, isShuffled bool, cardsList []string) response.ResultData
 	FindByID(ctx context.Context, deckUUID string) response.ResultData
-	Draw(ctx context.Context, deckUUID string) response.ResultData
+	Draw(ctx context.Context, deckUUID string, count int) response.ResultData
 }
 
 type deckUsecaseImpl struct {
@@ -116,6 +116,14 @@ func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) respon
 
 	// get cards by deck id
 	cardData, err := uc.repository.FindCardsByDeckID(ctx, deckUUID)
+	if err != nil {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Unable to find cards",
+			},
+		}
+	}
 
 	// map data to struct
 	deckWithCard := DeckWithCards{
@@ -140,22 +148,82 @@ func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) respon
 	}
 }
 
-func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string) response.ResultData {
+func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string, count int) response.ResultData {
+	// make sure deck is drawn at minimum of 1 card
+	if count < 1 {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Invalid draw amount",
+			},
+		}
+	}
+
 	// get decks by id
+	deckData, err := uc.repository.FindDeckByID(ctx, deckUUID)
 
 	// if deck does not exist, return error
+	if err != nil {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Unable to find deck",
+			},
+		}
+	}
+
+	if deckData.uuid == "" {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Invalid deck id",
+			},
+		}
+	}
 
 	// get cards by deck id
+	cardData, err := uc.repository.FindCardsWithLimit(ctx, deckUUID, count)
+	if err != nil {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Unable to find cards",
+			},
+		}
+	}
 
-	// if deck has no card left, return empty response
+	// map data to struct
+	cardsRes := Cards{
+		Cards: []Card{},
+	}
 
-	// take some card(s)
+	// store card uuid to be deleted from deck
+	cardsUUID := []string{}
 
-	// update existing deck of cards
+	for _, card := range cardData {
+		cardsRes.Cards = append(cardsRes.Cards, Card{
+			Value: card.value,
+			Suit:  card.suit,
+			Code:  card.code,
+		})
+
+		cardsUUID = append(cardsUUID, card.uuid)
+	}
+
+	// delete cards from deck
+	err = uc.repository.DeleteCards(ctx, cardsUUID)
+	if err != nil {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Unable to draw cards from deck",
+			},
+		}
+	}
 
 	// return cards response
 	return response.ResultData{
 		Code: http.StatusOK,
-		Data: Cards{},
+		Data: cardsRes,
 	}
 }
