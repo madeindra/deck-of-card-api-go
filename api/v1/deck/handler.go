@@ -5,14 +5,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"github.com/madeindra/toggl-test/internal/response"
 )
 
 type DeckHandler struct {
-	Validate *validator.Validate
-	Usecase  DeckUsecase
+	Usecase DeckUsecase
 }
 
 func NewDeckHandler(router *mux.Router, usecase DeckUsecase) {
