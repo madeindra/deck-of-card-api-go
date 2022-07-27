@@ -8,8 +8,8 @@ var standardDeck []string = []string{
 	"AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS",
 }
 
-// card suites
-var cardSuite map[string]string = map[string]string{"H": "HEARTS", "D": "DIAMONDS", "C": "CLUBS", "S": "SPADES"}
+// card suits
+var cardSuit map[string]string = map[string]string{"H": "HEARTS", "D": "DIAMONDS", "C": "CLUBS", "S": "SPADES"}
 
 // non-number card value
 var cardValue map[string]string = map[string]string{"A": "ACE", "J": "JACK", "Q": "QUEEN", "K": "KING"}

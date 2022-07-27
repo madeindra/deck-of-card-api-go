@@ -42,7 +42,7 @@ func decode(codes []string) ([]Card, error) {
 			parts = parts[:2]
 		}
 
-		// create empty card, value, and suite
+		// create empty card, value, and suit
 		currentCard := Card{}
 		value := ""
 		suit := ""
@@ -71,7 +71,7 @@ func decode(codes []string) ([]Card, error) {
 			}
 		}
 
-		// second char is the suite
+		// second char is the suit
 		switch parts[1] {
 		case "H":
 			suit = "HEARTS"
