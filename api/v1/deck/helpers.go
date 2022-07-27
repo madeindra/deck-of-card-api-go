@@ -51,7 +51,7 @@ func decode(codes []string) ([]Card, error) {
 		valueInt, err := strconv.Atoi(parts[0])
 
 		// allow only 2-10 for integer value
-		if valueInt < 10 && valueInt > 2 {
+		if valueInt < 11 && valueInt > 2 {
 			value = parts[0]
 		}
 
