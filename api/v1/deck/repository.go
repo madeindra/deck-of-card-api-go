@@ -4,14 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-
-	"github.com/google/uuid"
 )
 
 type (
 	DeckRepo interface {
 		CreateDeck(ctx context.Context, deck Deck) error
-		CreateCards(ctx context.Context, deckUUID string, cards []Card) error
+		CreateCards(ctx context.Context, deckUUID string, cardUUIDS []string, cards []Card) error
 		FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error)
 		FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error)
 		FindCardsWithLimit(ctx context.Context, deckUUID string, count int) ([]CardData, error)
@@ -56,7 +54,7 @@ func (repo *deckRepoImpl) CreateDeck(ctx context.Context, deck Deck) error {
 	return nil
 }
 
-func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, cards []Card) error {
+func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, cardUUIDS []string, cards []Card) error {
 	// create card
 	query := fmt.Sprintf("INSERT INTO %s (uuid, deck_uuid, value, suit, code) VALUES", repo.tableCard)
 
@@ -70,7 +68,7 @@ func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, card
 			query += ","
 		}
 
-		values = append(values, uuid.New().String(), deckUUID, row.Value, row.Suit, row.Code)
+		values = append(values, cardUUIDS[idx], deckUUID, row.Value, row.Suit, row.Code)
 	}
 
 	stmt, err := repo.db.PrepareContext(ctx, query)

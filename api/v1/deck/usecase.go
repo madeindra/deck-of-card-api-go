@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/madeindra/toggl-test/internal/response"
+	"github.com/madeindra/toggl-test/internal/uuid"
 )
 
 type DeckUsecase interface {
@@ -16,11 +16,13 @@ type DeckUsecase interface {
 
 type deckUsecaseImpl struct {
 	repository DeckRepo
+	uuid       uuid.UUID
 }
 
-func NewDeckUsecase(repository DeckRepo) DeckUsecase {
+func NewDeckUsecase(repository DeckRepo, uuid uuid.UUID) DeckUsecase {
 	return &deckUsecaseImpl{
 		repository: repository,
+		uuid:       uuid,
 	}
 }
 
@@ -51,7 +53,7 @@ func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []
 	}
 
 	// create deck
-	deckUUID := uuid.New().String()
+	deckUUID := uc.uuid.NewString()
 
 	deckData := Deck{
 		ID:        deckUUID,
@@ -69,8 +71,11 @@ func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []
 		}
 	}
 
+	// create uuids for cards
+	cardUUIDS := uuid.New().NewStringSlice(len(allCards))
+
 	// store deck of cards
-	err = uc.repository.CreateCards(ctx, deckUUID, allCards)
+	err = uc.repository.CreateCards(ctx, deckUUID, cardUUIDS, allCards)
 	if err != nil {
 		return response.ResultData{
 			Code: http.StatusInternalServerError,
