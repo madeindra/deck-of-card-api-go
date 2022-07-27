@@ -2,15 +2,16 @@ package deck
 
 import (
 	"context"
-	"errors"
+	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/madeindra/toggl-test/internal/response"
 )
 
 type DeckUsecase interface {
-	Create(ctx context.Context, isShuffled bool, cardsList []string) interface{}
-	FindByID(ctx context.Context, deckUUID string) interface{}
-	Draw(ctx context.Context, deckUUID string) interface{}
+	Create(ctx context.Context, isShuffled bool, cardsList []string) response.ResultData
+	FindByID(ctx context.Context, deckUUID string) response.ResultData
+	Draw(ctx context.Context, deckUUID string) response.ResultData
 }
 
 type deckUsecaseImpl struct {
@@ -23,7 +24,7 @@ func NewDeckUsecase(repository DeckRepo) DeckUsecase {
 	}
 }
 
-func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []string) interface{} {
+func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []string) response.ResultData {
 	// check if list of cards is provided
 	codes := []string{}
 	if len(cards) != 0 {
@@ -41,7 +42,12 @@ func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []
 	allCards, err := decode(codes)
 
 	if err != nil {
-		return &Deck{}
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Invalid card",
+			},
+		}
 	}
 
 	// create deck
@@ -55,24 +61,37 @@ func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []
 
 	err = uc.repository.CreateDeck(ctx, deckData)
 	if err != nil {
-		return errors.New("Error: unable to create deck")
+		return response.ResultData{
+			Code: http.StatusInternalServerError,
+			Data: response.FailedResult{
+				Message: "Unable to create deck",
+			},
+		}
 	}
 
 	// store deck of cards
 	err = uc.repository.CreateCards(ctx, deckUUID, allCards)
 	if err != nil {
-		return errors.New("Error: unable to create card")
+		return response.ResultData{
+			Code: http.StatusInternalServerError,
+			Data: response.FailedResult{
+				Message: "Unable to create cards",
+			},
+		}
 	}
 
 	// return response
-	return Deck{
-		ID:        deckUUID,
-		Shuffled:  isShuffled,
-		Remaining: len(allCards),
+	return response.ResultData{
+		Code: http.StatusCreated,
+		Data: Deck{
+			ID:        deckUUID,
+			Shuffled:  isShuffled,
+			Remaining: len(allCards),
+		},
 	}
 }
 
-func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) interface{} {
+func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) response.ResultData {
 	// get decks by id
 
 	// if deck does not exist, return error
@@ -80,10 +99,13 @@ func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) interf
 	// get cards by deck id
 
 	// return deck of cards
-	return &DeckWithCards{}
+	return response.ResultData{
+		Code: http.StatusOK,
+		Data: DeckWithCards{},
+	}
 }
 
-func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string) interface{} {
+func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string) response.ResultData {
 	// get decks by id
 
 	// if deck does not exist, return error
@@ -97,5 +119,8 @@ func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string) interface{
 	// update existing deck of cards
 
 	// return cards response
-	return Cards{}
+	return response.ResultData{
+		Code: http.StatusOK,
+		Data: Cards{},
+	}
 }

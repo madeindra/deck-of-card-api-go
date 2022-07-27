@@ -1,13 +1,13 @@
 package deck
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
+	"github.com/madeindra/toggl-test/internal/response"
 )
 
 type DeckHandler struct {
@@ -46,16 +46,7 @@ func (handler *DeckHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	result := handler.Usecase.Create(ctx, isShuffled, cardsList)
 
-	response, err := json.Marshal(result)
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
-		w.Write([]byte("{message: \"An Error Occured\"}"))
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	w.Write(response)
+	response.JSON(w, result)
 }
 
 func (handler *DeckHandler) FindByID(w http.ResponseWriter, r *http.Request) {
@@ -64,16 +55,7 @@ func (handler *DeckHandler) FindByID(w http.ResponseWriter, r *http.Request) {
 	uuid := mux.Vars(r)["uuid"]
 	result := handler.Usecase.FindByID(ctx, uuid)
 
-	response, err := json.Marshal(result)
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
-		w.Write([]byte("{message: \"An Error Occured\"}"))
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	w.Write(response)
+	response.JSON(w, result)
 }
 
 func (handler *DeckHandler) Draw(w http.ResponseWriter, r *http.Request) {
@@ -82,14 +64,5 @@ func (handler *DeckHandler) Draw(w http.ResponseWriter, r *http.Request) {
 	uuid := mux.Vars(r)["uuid"]
 	result := handler.Usecase.Draw(ctx, uuid)
 
-	response, err := json.Marshal(result)
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
-		w.Write([]byte("{message: \"An Error Occured\"}"))
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	w.Write(response)
+	response.JSON(w, result)
 }
