@@ -7,9 +7,10 @@ import (
 
 type (
 	DeckRepo interface {
-		Create(ctx context.Context, cards string) (DeckWithCards, error)
-		FindByID(ctx context.Context, ID int64) (Deck, error)
-		Draw(ctx context.Context, count int64) ([]Card, error)
+		Create(ctx context.Context, cards []string) (string, error)
+		FindDeckByID(ctx context.Context, deck_id string) (Deck, error)
+		FindCardsByDeckID(ctx context.Context, deck_id string) ([]Card, error)
+		Update(ctx context.Context, deck_id string, count int64) error
 	}
 
 	deckRepoImpl struct {
@@ -27,14 +28,29 @@ func NewDeckRepo(db *sql.DB, tableDeck string, tableCard string) DeckRepo {
 	}
 }
 
-func (repo *deckRepoImpl) Create(ctx context.Context, cards string) (DeckWithCards, error) {
-	return DeckWithCards{}, nil
+func (repo *deckRepoImpl) Create(ctx context.Context, cards []string) (string, error) {
+	// create deck
+
+	// insert card for deck
+
+	// return data
+	return "", nil
 }
 
-func (repo *deckRepoImpl) FindByID(ctx context.Context, ID int64) (Deck, error) {
+func (repo *deckRepoImpl) FindDeckByID(ctx context.Context, deck_id string) (Deck, error) {
+	// find deck
+
+	// return response
 	return Deck{}, nil
 }
 
-func (repo *deckRepoImpl) Draw(ctx context.Context, count int64) ([]Card, error) {
+func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deck_id string) ([]Card, error) {
+	// find deck
+
+	// return response
 	return []Card{}, nil
+}
+
+func (repo *deckRepoImpl) Update(ctx context.Context, deck_id string, count int64) error {
+	return nil
 }

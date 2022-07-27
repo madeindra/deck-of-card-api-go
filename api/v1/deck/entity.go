@@ -35,3 +35,8 @@ type DeckWithCards struct {
 	Remaining int64  `json:"remaining"`
 	Cards     []Card `json:"cards"`
 }
+
+// properties of cards
+type Cards struct {
+	Cards []Card `json:"cards"`
+}
