@@ -94,17 +94,68 @@ func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, card
 }
 
 func (repo *deckRepoImpl) FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error) {
-	// find deck
+	deckData := DeckData{}
 
-	// return response
-	return DeckData{}, nil
+	// get deck by id
+	query := fmt.Sprintf("SELECT uuid, shuffled FROM %s where uuid=$1", repo.tableDeck)
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return deckData, err
+	}
+	defer stmt.Close()
+
+	// map the data to struct
+	row := stmt.QueryRowContext(ctx, deckUUID)
+
+	err = row.Scan(
+		&deckData.uuid,
+		&deckData.shuffled,
+	)
+
+	if err != nil {
+		return deckData, err
+	}
+
+	// return data
+	return deckData, nil
 }
 
 func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error) {
-	// find deck
+	cardData := []CardData{}
 
-	// return response
-	return []CardData{}, nil
+	// get deck by id
+	query := fmt.Sprintf("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1", repo.tableCard)
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return cardData, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.QueryContext(ctx, deckUUID)
+	if err != nil {
+		return cardData, err
+	}
+
+	// map data to struct
+	for rows.Next() {
+		card := CardData{}
+		err = rows.Scan(
+			&card.uuid,
+			&card.deck_uuid,
+			&card.value,
+			&card.suit,
+			&card.code,
+		)
+
+		if err != nil {
+			return cardData, err
+		}
+
+		cardData = append(cardData, card)
+	}
+
+	// return data
+	return cardData, nil
 }
 
 func (repo *deckRepoImpl) Update(ctx context.Context, deckUUID string, count int) error {

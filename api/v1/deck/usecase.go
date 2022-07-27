@@ -93,15 +93,50 @@ func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []
 
 func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) response.ResultData {
 	// get decks by id
+	deckData, err := uc.repository.FindDeckByID(ctx, deckUUID)
 
 	// if deck does not exist, return error
+	if err != nil {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Unable to find deck",
+			},
+		}
+	}
+
+	if deckData.uuid == "" {
+		return response.ResultData{
+			Code: http.StatusBadRequest,
+			Data: response.FailedResult{
+				Message: "Invalid deck id",
+			},
+		}
+	}
 
 	// get cards by deck id
+	cardData, err := uc.repository.FindCardsByDeckID(ctx, deckUUID)
+
+	// map data to struct
+	deckWithCard := DeckWithCards{
+		ID:        deckData.uuid,
+		Shuffled:  deckData.shuffled,
+		Remaining: len(cardData),
+		Cards:     []Card{},
+	}
+
+	for _, card := range cardData {
+		deckWithCard.Cards = append(deckWithCard.Cards, Card{
+			Value: card.value,
+			Suit:  card.suit,
+			Code:  card.code,
+		})
+	}
 
 	// return deck of cards
 	return response.ResultData{
 		Code: http.StatusOK,
-		Data: DeckWithCards{},
+		Data: deckWithCard,
 	}
 }
 
