@@ -54,46 +54,65 @@ CREATE TABLE cards (
 
 ### Create a new Deck
 Path: `/v1/decks`
+
 Method: `POST`
+
 Query Parameters:
   * shuffled (optional, boolean, default to false)
-  * cards (optional, 2-3 chars of value [2-10, A, J, Q, K] and suit [H, D, S, C], example 10C)
+  * cards (optional, comma separated string, 2-3 chars of value [2-10, A, J, Q, K] and suit [H, D, S, C], example 10C)
+
 Path Parameters: -
+
 Request Body: -
+
 Request Header: -
 
 ### Open a Deck
 Path: `/v1/decks/{deck_id}`
+
 Method: `GET`
+
 Query Parameters: -
+
 Path Parameters: 
    * deck_id (required, uuid of the deck)
+
 Request Body: -
+
 Request Header: -
 
 ### Draw a Card (or some Cards)
 Path: `/v1/decks/{deck_id}/draw`
+
 Method: `GET`
+
 Query Parameters: 
    * count (required, int, minimum of 1)
+
 Path Parameters: 
    * deck_id (required, uuid of the deck)
+
 Request Body: -
+
 Request Header: -
+
 ## Open API Specification
 Please refer to [openapi.yml](./docs/openapi.yml) inside `docs` directory.
 
 ## FAQ
 Q: I can't run the built file
+
 A: Give permission to execute the file by running this command
 ```
 chmod +x ./main
 ```
 
 Q: What will happen if I draw more cards than the remaining cards in the deck?
+
 A: It will draw the remaining cards
 
 Q: What will happen if I draw card(s) from empty deck?
+
 A: It will return an error
 
 ## Further Development
