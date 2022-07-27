@@ -3,14 +3,18 @@ package deck
 import (
 	"context"
 	"database/sql"
+	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type (
 	DeckRepo interface {
-		Create(ctx context.Context, cards []string) (string, error)
-		FindDeckByID(ctx context.Context, deck_id string) (Deck, error)
-		FindCardsByDeckID(ctx context.Context, deck_id string) ([]Card, error)
-		Update(ctx context.Context, deck_id string, count int64) error
+		CreateDeck(ctx context.Context, deck Deck) error
+		CreateCards(ctx context.Context, deckUUID string, cards []Card) error
+		FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error)
+		FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error)
+		Update(ctx context.Context, deckUUID string, count int64) error
 	}
 
 	deckRepoImpl struct {
@@ -28,29 +32,81 @@ func NewDeckRepo(db *sql.DB, tableDeck string, tableCard string) DeckRepo {
 	}
 }
 
-func (repo *deckRepoImpl) Create(ctx context.Context, cards []string) (string, error) {
+func (repo *deckRepoImpl) CreateDeck(ctx context.Context, deck Deck) error {
 	// create deck
+	query := fmt.Sprintf("INSERT INTO %s (uuid, shuffled) VALUES ($1, $2)", repo.tableDeck)
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
 
-	// insert card for deck
+	// insert deck to db
+	_, err = stmt.ExecContext(
+		ctx,
+		deck.ID,
+		deck.Shuffled,
+	)
+
+	if err != nil {
+		return err
+	}
 
 	// return data
-	return "", nil
+	return nil
 }
 
-func (repo *deckRepoImpl) FindDeckByID(ctx context.Context, deck_id string) (Deck, error) {
+func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, cards []Card) error {
+	// create card
+	query := fmt.Sprintf("INSERT INTO %s (uuid, deck_uuid, value, suit, code) VALUES", repo.tableCard)
+
+	// create multiple rows
+	values := []interface{}{}
+	for idx, row := range cards {
+		query += fmt.Sprintf(" ($%d, $%d, $%d, $%d, $%d)", idx*5+1, idx*5+2, idx*5+3, idx*5+4, idx*5+5)
+
+		// if not last value, append comma
+		if idx < len(cards)-1 {
+			query += ","
+		}
+
+		values = append(values, uuid.New().String(), deckUUID, row.Value, row.Suit, row.Code)
+	}
+
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// insert card for deck
+	_, err = stmt.ExecContext(
+		ctx,
+		values...,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	// return data
+	return nil
+}
+
+func (repo *deckRepoImpl) FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error) {
 	// find deck
 
 	// return response
-	return Deck{}, nil
+	return DeckData{}, nil
 }
 
-func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deck_id string) ([]Card, error) {
+func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error) {
 	// find deck
 
 	// return response
-	return []Card{}, nil
+	return []CardData{}, nil
 }
 
-func (repo *deckRepoImpl) Update(ctx context.Context, deck_id string, count int64) error {
+func (repo *deckRepoImpl) Update(ctx context.Context, deckUUID string, count int64) error {
 	return nil
 }

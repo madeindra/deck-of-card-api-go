@@ -40,3 +40,18 @@ type DeckWithCards struct {
 type Cards struct {
 	Cards []Card `json:"cards"`
 }
+
+// column of Deck in Table
+type DeckData struct {
+	uuid     string
+	shuffled bool
+}
+
+// column of Deck in Table
+type CardData struct {
+	uuid      string
+	value     string
+	suit      string
+	code      string
+	deck_uuid string
+}
