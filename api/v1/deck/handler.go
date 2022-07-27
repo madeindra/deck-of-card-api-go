@@ -21,7 +21,7 @@ func NewDeckHandler(router *mux.Router, validate *validator.Validate, usecase De
 		Usecase:  usecase,
 	}
 
-	router.HandleFunc("/v1/decks", handler.Create).Methods(http.MethodGet)
+	router.HandleFunc("/v1/decks", handler.Create).Methods(http.MethodPost)
 	router.HandleFunc("/v1/decks/{uuid}", handler.FindByID).Methods(http.MethodGet)
 	router.HandleFunc("/v1/decks/{uuid}/draw", handler.Draw).Methods(http.MethodGet)
 }
