@@ -15,10 +15,9 @@ type DeckHandler struct {
 	Usecase  DeckUsecase
 }
 
-func NewDeckHandler(router *mux.Router, validate *validator.Validate, usecase DeckUsecase) {
+func NewDeckHandler(router *mux.Router, usecase DeckUsecase) {
 	handler := &DeckHandler{
-		Validate: validate,
-		Usecase:  usecase,
+		Usecase: usecase,
 	}
 
 	router.HandleFunc("/v1/decks", handler.Create).Methods(http.MethodPost)
