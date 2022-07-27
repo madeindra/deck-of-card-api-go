@@ -18,7 +18,7 @@ var cardValue map[string]string = map[string]string{"A": "ACE", "J": "JACK", "Q"
 type Deck struct {
 	ID        string `json:"deck_id"`
 	Shuffled  bool   `json:"shuffled"`
-	Remaining int64  `json:"remaining"`
+	Remaining int    `json:"remaining"`
 }
 
 // properties of card
@@ -32,7 +32,7 @@ type Card struct {
 type DeckWithCards struct {
 	ID        string `json:"deck_id"`
 	Shuffled  bool   `json:"shuffled"`
-	Remaining int64  `json:"remaining"`
+	Remaining int    `json:"remaining"`
 	Cards     []Card `json:"cards"`
 }
 

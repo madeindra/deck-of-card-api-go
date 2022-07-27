@@ -14,7 +14,7 @@ type (
 		CreateCards(ctx context.Context, deckUUID string, cards []Card) error
 		FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error)
 		FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error)
-		Update(ctx context.Context, deckUUID string, count int64) error
+		Update(ctx context.Context, deckUUID string, count int) error
 	}
 
 	deckRepoImpl struct {
@@ -107,6 +107,6 @@ func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string
 	return []CardData{}, nil
 }
 
-func (repo *deckRepoImpl) Update(ctx context.Context, deckUUID string, count int64) error {
+func (repo *deckRepoImpl) Update(ctx context.Context, deckUUID string, count int) error {
 	return nil
 }
