@@ -14,13 +14,13 @@ type DeckRepo struct {
 	mock.Mock
 }
 
-// CreateCards provides a mock function with given fields: ctx, deckUUID, cards
-func (_m *DeckRepo) CreateCards(ctx context.Context, deckUUID string, cards []deck.Card) error {
-	ret := _m.Called(ctx, deckUUID, cards)
+// CreateCards provides a mock function with given fields: ctx, deckUUID, cardUUIDS, cards
+func (_m *DeckRepo) CreateCards(ctx context.Context, deckUUID string, cardUUIDS []string, cards []deck.Card) error {
+	ret := _m.Called(ctx, deckUUID, cardUUIDS, cards)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, []deck.Card) error); ok {
-		r0 = rf(ctx, deckUUID, cards)
+	if rf, ok := ret.Get(0).(func(context.Context, string, []string, []deck.Card) error); ok {
+		r0 = rf(ctx, deckUUID, cardUUIDS, cards)
 	} else {
 		r0 = ret.Error(0)
 	}
