@@ -25,8 +25,21 @@ func decode(codes []string) ([]Card, error) {
 	// split into 2 characters
 	for _, c := range codes {
 		parts := strings.Split(c, "")
-		if len(parts) != 2 {
+
+		// alow at max 3 chars
+		if len(parts) < 2 || len(parts) > 3 {
 			return []Card{}, errors.New("Invalid Card Codes")
+		}
+
+		if len(parts) == 3 {
+			// combine first and second parts into one string
+			parts[0] += parts[1]
+
+			// swap second parts with third parts
+			parts[1] = parts[2]
+
+			// trim last element
+			parts = parts[:2]
 		}
 
 		// create empty card, value, and suite
