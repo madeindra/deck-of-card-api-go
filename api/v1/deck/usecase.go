@@ -65,7 +65,11 @@ func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []
 	}
 
 	// return response
-	return &Deck{}
+	return Deck{
+		ID:        deckUUID,
+		Shuffled:  isShuffled,
+		Remaining: len(allCards),
+	}
 }
 
 func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) interface{} {
