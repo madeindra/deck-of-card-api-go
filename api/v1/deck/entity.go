@@ -2,17 +2,11 @@ package deck
 
 // standard deck
 var standardDeck []string = []string{
-	"AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH",
+	"AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS",
 	"AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD",
 	"AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC",
-	"AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS",
+	"AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH",
 }
-
-// card suits
-var cardSuit map[string]string = map[string]string{"H": "HEARTS", "D": "DIAMONDS", "C": "CLUBS", "S": "SPADES"}
-
-// non-number card value
-var cardValue map[string]string = map[string]string{"A": "ACE", "J": "JACK", "Q": "QUEEN", "K": "KING"}
 
 // properties of deck
 type Deck struct {
@@ -54,4 +48,23 @@ type CardData struct {
 	suit      string
 	code      string
 	deck_uuid string
+}
+
+// for repository testing purpose
+func NewDeckData(uuid string, shuffled bool) DeckData {
+	return DeckData{
+		uuid:     uuid,
+		shuffled: shuffled,
+	}
+}
+
+// for repository testing purpose
+func NewCardData(uuid string, value string, suit string, code string, deck_uuid string) CardData {
+	return CardData{
+		uuid:      uuid,
+		value:     value,
+		suit:      suit,
+		code:      code,
+		deck_uuid: deck_uuid,
+	}
 }
