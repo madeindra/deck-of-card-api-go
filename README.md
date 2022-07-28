@@ -67,6 +67,8 @@ Request Body: -
 
 Request Header: -
 
+Example Request: `POST` `/v1/decks?shuffled=true&cards=AS,KD,AC,2C,KH`
+
 ### Open a Deck
 Path: `/v1/decks/{deck_id}`
 
@@ -80,6 +82,8 @@ Path Parameters:
 Request Body: -
 
 Request Header: -
+
+Example Request: `GET` `/v1/decks/a93c7204-0a94-45be-8062-3bff5e7845cb`
 
 ### Draw a Card (or some Cards)
 Path: `/v1/decks/{deck_id}/draw`
@@ -96,6 +100,8 @@ Request Body: -
 
 Request Header: -
 
+Example Request: `GET` `/v1/decks/a93c7204-0a94-45be-8062-3bff5e7845cb/draw?count=1`
+
 ## Open API Specification
 Please refer to [openapi.yml](./docs/openapi.yml) inside `docs` directory.
 
@@ -109,13 +115,14 @@ chmod +x ./main
 
 Q: What will happen if I draw more cards than the remaining cards in the deck?
 
-A: It will draw the remaining cards
+A: It will draw the remaining cards.
 
 Q: What will happen if I draw card(s) from empty deck?
 
-A: It will return an error
+A: It will return an error.
 
 ## Further Development
-- Unit tests
-- Build dockerimage for simpler deployment
+- Docker image & compose (for simpler deployment)
+- Cache (currently there's no need since the deck can only have 52 cards at most)
+- Timestamp in Database (currently there's no data update, so the order of data will not be changed)
 - Refactoring & cleaning

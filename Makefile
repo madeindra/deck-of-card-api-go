@@ -1,4 +1,4 @@
-.PHONY: install run build
+.PHONY: install run build test cover
 
 install:
 	go mod download

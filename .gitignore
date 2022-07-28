@@ -47,8 +47,6 @@ go.work
 ### Environment Variable ###
 .env
 
-docker/.env
-
 ### Test Coverage ###
 coverage
 
