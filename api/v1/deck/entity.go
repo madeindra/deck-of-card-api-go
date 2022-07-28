@@ -49,3 +49,22 @@ type CardData struct {
 	code      string
 	deck_uuid string
 }
+
+// for repository testing purpose
+func NewDeckData(uuid string, shuffled bool) DeckData {
+	return DeckData{
+		uuid:     uuid,
+		shuffled: shuffled,
+	}
+}
+
+// for repository testing purpose
+func NewCardData(uuid string, value string, suit string, code string, deck_uuid string) CardData {
+	return CardData{
+		uuid:      uuid,
+		value:     value,
+		suit:      suit,
+		code:      code,
+		deck_uuid: deck_uuid,
+	}
+}

@@ -103,7 +103,7 @@ func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) respon
 	// if deck does not exist, return error
 	if err != nil {
 		return response.ResultData{
-			Code: http.StatusBadRequest,
+			Code: http.StatusNotFound,
 			Data: response.FailedResult{
 				Message: "Unable to find deck",
 			},
@@ -123,7 +123,7 @@ func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) respon
 	cardData, err := uc.repository.FindCardsByDeckID(ctx, deckUUID)
 	if err != nil {
 		return response.ResultData{
-			Code: http.StatusBadRequest,
+			Code: http.StatusNotFound,
 			Data: response.FailedResult{
 				Message: "Unable to find cards",
 			},
@@ -170,7 +170,7 @@ func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string, count int)
 	// if deck does not exist, return error
 	if err != nil {
 		return response.ResultData{
-			Code: http.StatusBadRequest,
+			Code: http.StatusNotFound,
 			Data: response.FailedResult{
 				Message: "Unable to find deck",
 			},
@@ -190,7 +190,7 @@ func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string, count int)
 	cardData, err := uc.repository.FindCardsWithLimit(ctx, deckUUID, count)
 	if err != nil {
 		return response.ResultData{
-			Code: http.StatusBadRequest,
+			Code: http.StatusNotFound,
 			Data: response.FailedResult{
 				Message: "Unable to find cards",
 			},
@@ -219,7 +219,7 @@ func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string, count int)
 	err = uc.repository.DeleteCards(ctx, cardsUUID)
 	if err != nil {
 		return response.ResultData{
-			Code: http.StatusBadRequest,
+			Code: http.StatusInternalServerError,
 			Data: response.FailedResult{
 				Message: "Unable to draw cards from deck",
 			},
