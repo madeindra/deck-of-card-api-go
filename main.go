@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	_ "github.com/joho/godotenv/autoload"
@@ -13,6 +14,9 @@ import (
 	"github.com/madeindra/toggl-test/internal/config"
 	"github.com/madeindra/toggl-test/internal/constant"
 	"github.com/madeindra/toggl-test/internal/uuid"
+	"github.com/rs/zerolog"
+	sqldblogger "github.com/simukti/sqldb-logger"
+	"github.com/simukti/sqldb-logger/logadapter/zerologadapter"
 )
 
 func main() {
@@ -21,6 +25,9 @@ func main() {
 
 	// initialize database
 	db, err := sql.Open("postgres", cfg.Database.DSN)
+
+	// add logger
+	db = sqldblogger.OpenDriver(cfg.Database.DSN, db.Driver(), zerologadapter.New(zerolog.New(os.Stdout)))
 
 	if err != nil {
 		log.Fatal(err)
