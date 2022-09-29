@@ -34,15 +34,11 @@ func NewDeckRepo(db *sql.DB, tableDeck string, tableCard string) DeckRepo {
 func (repo *deckRepoImpl) CreateDeck(ctx context.Context, deck Deck) error {
 	// create deck
 	query := fmt.Sprintf("INSERT INTO %s (uuid, shuffled) VALUES ($1, $2)", repo.tableDeck)
-	stmt, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
 
 	// insert deck to db
-	_, err = stmt.ExecContext(
+	_, err := repo.db.ExecContext(
 		ctx,
+		query,
 		deck.ID,
 		deck.Shuffled,
 	)
@@ -71,15 +67,10 @@ func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, card
 		values = append(values, cardUUIDS[idx], deckUUID, row.Value, row.Suit, row.Code)
 	}
 
-	stmt, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
 	// insert card for deck
-	_, err = stmt.ExecContext(
+	_, err := repo.db.ExecContext(
 		ctx,
+		query,
 		values...,
 	)
 
@@ -95,16 +86,11 @@ func (repo *deckRepoImpl) FindDeckByID(ctx context.Context, deckUUID string) (De
 
 	// get deck by id
 	query := fmt.Sprintf("SELECT uuid, shuffled FROM %s where uuid=$1", repo.tableDeck)
-	stmt, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return deckData, err
-	}
-	defer stmt.Close()
 
 	// map the data to struct
-	row := stmt.QueryRowContext(ctx, deckUUID)
+	row := repo.db.QueryRowContext(ctx, query, deckUUID)
 
-	err = row.Scan(
+	err := row.Scan(
 		&deckData.uuid,
 		&deckData.shuffled,
 	)
@@ -122,13 +108,8 @@ func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string
 
 	// get deck by id
 	query := fmt.Sprintf("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1", repo.tableCard)
-	stmt, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return cardData, err
-	}
-	defer stmt.Close()
 
-	rows, err := stmt.QueryContext(ctx, deckUUID)
+	rows, err := repo.db.QueryContext(ctx, query, deckUUID)
 	if err != nil {
 		return cardData, err
 	}
@@ -160,13 +141,8 @@ func (repo *deckRepoImpl) FindCardsWithLimit(ctx context.Context, deckUUID strin
 
 	// get deck by id
 	query := fmt.Sprintf("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1 LIMIT %d", repo.tableCard, count)
-	stmt, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return cardData, err
-	}
-	defer stmt.Close()
 
-	rows, err := stmt.QueryContext(ctx, deckUUID)
+	rows, err := repo.db.QueryContext(ctx, query, deckUUID)
 	if err != nil {
 		return cardData, err
 	}
@@ -212,15 +188,10 @@ func (repo *deckRepoImpl) DeleteCards(ctx context.Context, uuids []string) error
 		values = append(values, uuid)
 	}
 
-	stmt, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
 	// delete cards with uuids
-	_, err = stmt.ExecContext(
+	_, err := repo.db.ExecContext(
 		ctx,
+		query,
 		values...,
 	)
 
