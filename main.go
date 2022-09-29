@@ -8,8 +8,8 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	_ "github.com/jackc/pgx"
 	_ "github.com/joho/godotenv/autoload"
-	_ "github.com/lib/pq"
 	"github.com/madeindra/toggl-test/api/v1/deck"
 	"github.com/madeindra/toggl-test/internal/config"
 	"github.com/madeindra/toggl-test/internal/constant"
