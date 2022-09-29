@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	_ "github.com/jackc/pgx"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/madeindra/toggl-test/api/v1/deck"
 	"github.com/madeindra/toggl-test/internal/config"
@@ -24,18 +24,20 @@ func main() {
 	cfg := config.Init()
 
 	// initialize database
-	db, err := sql.Open("postgres", cfg.Database.DSN)
-
-	// add logger
-	db = sqldblogger.OpenDriver(cfg.Database.DSN, db.Driver(), zerologadapter.New(zerolog.New(os.Stdout)))
+	db, err := sql.Open("pgx", cfg.Database.DSN)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// add logger
+	db = sqldblogger.OpenDriver(cfg.Database.DSN, db.Driver(), zerologadapter.New(zerolog.New(os.Stdout)))
+
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
+
+	defer db.Close()
 
 	db.SetMaxIdleConns(cfg.Database.MaxIdleConnections)
 	db.SetMaxOpenConns(cfg.Database.MaxOpenConnections)
