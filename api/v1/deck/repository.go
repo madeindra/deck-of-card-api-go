@@ -113,6 +113,7 @@ func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string
 	if err != nil {
 		return cardData, err
 	}
+	defer rows.Close()
 
 	// map data to struct
 	for rows.Next() {
@@ -130,6 +131,11 @@ func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string
 		}
 
 		cardData = append(cardData, card)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return cardData, err
 	}
 
 	// return data
@@ -146,6 +152,7 @@ func (repo *deckRepoImpl) FindCardsWithLimit(ctx context.Context, deckUUID strin
 	if err != nil {
 		return cardData, err
 	}
+	defer rows.Close()
 
 	// map data to struct
 	for rows.Next() {
@@ -163,6 +170,11 @@ func (repo *deckRepoImpl) FindCardsWithLimit(ctx context.Context, deckUUID strin
 		}
 
 		cardData = append(cardData, card)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return cardData, err
 	}
 
 	// return data
