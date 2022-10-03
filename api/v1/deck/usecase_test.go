@@ -16,7 +16,7 @@ var mockDeckData = deck.NewDeckData("someid", true)
 var mockCardsData = []deck.CardData{deck.NewCardData("otherid", "ACE", "SPACE", "AS", "someid")}
 
 func TestCreateDefaultSuccess(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	uuid.On("NewString").Return("random-deck-id", nil)
@@ -37,7 +37,7 @@ func TestCreateDefaultSuccess(t *testing.T) {
 }
 
 func TestCreateSuccess(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	uuid.On("NewString").Return("random-deck-id", nil)
@@ -58,7 +58,7 @@ func TestCreateSuccess(t *testing.T) {
 }
 
 func TestCreateInvalidCode1Failed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	uuid.On("NewString").Return("random-deck-id", nil)
@@ -74,7 +74,7 @@ func TestCreateInvalidCode1Failed(t *testing.T) {
 }
 
 func TestCreateInvalidCode2Failed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	uuid.On("NewString").Return("random-deck-id", nil)
@@ -90,7 +90,7 @@ func TestCreateInvalidCode2Failed(t *testing.T) {
 }
 
 func TestCreateInvalidCode3Failed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	uuid.On("NewString").Return("random-deck-id", nil)
@@ -106,7 +106,7 @@ func TestCreateInvalidCode3Failed(t *testing.T) {
 }
 
 func TestCreateDeckFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	uuid.On("NewString").Return("random-deck-id", nil)
@@ -126,7 +126,7 @@ func TestCreateDeckFailed(t *testing.T) {
 }
 
 func TestCreateCardFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	uuid.On("NewString").Return("random-deck-id", nil)
@@ -147,7 +147,7 @@ func TestCreateCardFailed(t *testing.T) {
 }
 
 func TestFindByIDSuccess(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
@@ -165,7 +165,7 @@ func TestFindByIDSuccess(t *testing.T) {
 }
 
 func TestFindByIDFindDeckFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), errors.New("an error occured"))
@@ -182,7 +182,7 @@ func TestFindByIDFindDeckFailed(t *testing.T) {
 }
 
 func TestFindByIDInvalidDeckFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), nil)
@@ -199,7 +199,7 @@ func TestFindByIDInvalidDeckFailed(t *testing.T) {
 }
 
 func TestFindByIDFindCardsFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
@@ -217,7 +217,7 @@ func TestFindByIDFindCardsFailed(t *testing.T) {
 }
 
 func TestDrawSuccess(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
@@ -236,7 +236,7 @@ func TestDrawSuccess(t *testing.T) {
 }
 
 func TestDrawInvalidCountFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
@@ -251,7 +251,7 @@ func TestDrawInvalidCountFailed(t *testing.T) {
 }
 
 func TestDrawFindDeckFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), errors.New("an error occured"))
@@ -268,7 +268,7 @@ func TestDrawFindDeckFailed(t *testing.T) {
 }
 
 func TestDrawInvalidDeckFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), nil)
@@ -285,7 +285,7 @@ func TestDrawInvalidDeckFailed(t *testing.T) {
 }
 
 func TestDrawFindCardsFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
@@ -303,7 +303,7 @@ func TestDrawFindCardsFailed(t *testing.T) {
 }
 
 func TestDrawDeleteFailed(t *testing.T) {
-	deckRepo := new(mocks.DeckRepo)
+	deckRepo := new(mocks.DeckRepose)
 	uuid := new(uuid.UUID)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)

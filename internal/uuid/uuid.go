@@ -2,23 +2,23 @@ package uuid
 
 import "github.com/google/uuid"
 
-type UUID interface {
+type UUIDGenerate interface {
 	NewString() string
 	NewStringSlice(count int) []string
 }
 
-type UUIDImpl struct {
+type UUIDGenerator struct {
 }
 
-func New() UUID {
-	return &UUIDImpl{}
+func New() UUIDGenerate {
+	return &UUIDGenerator{}
 }
 
-func (ui *UUIDImpl) NewString() string {
+func (ui *UUIDGenerator) NewString() string {
 	return uuid.NewString()
 }
 
-func (ui *UUIDImpl) NewStringSlice(count int) []string {
+func (ui *UUIDGenerator) NewStringSlice(count int) []string {
 	uuids := []string{}
 
 	for i := 0; i <= count; i++ {

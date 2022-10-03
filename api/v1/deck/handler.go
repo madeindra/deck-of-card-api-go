@@ -10,10 +10,10 @@ import (
 )
 
 type DeckHandler struct {
-	Usecase DeckUsecase
+	Usecase DeckUse
 }
 
-func NewDeckHandler(router *mux.Router, usecase DeckUsecase) {
+func NewDeckHandler(router *mux.Router, usecase DeckUse) {
 	handler := &DeckHandler{
 		Usecase: usecase,
 	}

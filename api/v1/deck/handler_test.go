@@ -15,7 +15,7 @@ import (
 )
 
 func TestCreateHandlerDefault(t *testing.T) {
-	deckUsecase := new(mocks.DeckUsecase)
+	deckUsecase := new(mocks.DeckUse)
 	deckUsecase.On("Create", mock.Anything, mock.AnythingOfType("bool"), mock.AnythingOfType("[]string")).Return(response.ResultData{
 		Code: 201,
 		Data: deck.Deck{
@@ -47,7 +47,7 @@ func TestCreateHandlerDefault(t *testing.T) {
 }
 
 func TestCreateHandler(t *testing.T) {
-	deckUsecase := new(mocks.DeckUsecase)
+	deckUsecase := new(mocks.DeckUse)
 	deckUsecase.On("Create", mock.Anything, mock.AnythingOfType("bool"), mock.AnythingOfType("[]string")).Return(response.ResultData{
 		Code: 201,
 		Data: deck.Deck{
@@ -79,7 +79,7 @@ func TestCreateHandler(t *testing.T) {
 }
 
 func TestFindByIDHandler(t *testing.T) {
-	deckUsecase := new(mocks.DeckUsecase)
+	deckUsecase := new(mocks.DeckUse)
 	deckUsecase.On("FindByID", mock.Anything, mock.AnythingOfType("string")).Return(response.ResultData{
 		Code: 200,
 		Data: deck.DeckWithCards{
@@ -87,7 +87,7 @@ func TestFindByIDHandler(t *testing.T) {
 			Shuffled:  true,
 			Remaining: 1,
 			Cards: []deck.Card{
-				deck.Card{
+				{
 					Value: "ACE",
 					Suit:  "CLUB",
 					Code:  "AC",
@@ -121,12 +121,12 @@ func TestFindByIDHandler(t *testing.T) {
 }
 
 func TestDrawHandler(t *testing.T) {
-	deckUsecase := new(mocks.DeckUsecase)
+	deckUsecase := new(mocks.DeckUse)
 	deckUsecase.On("Draw", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("int")).Return(response.ResultData{
 		Code: 200,
 		Data: deck.Cards{
 			Cards: []deck.Card{
-				deck.Card{
+				{
 					Value: "ACE",
 					Suit:  "CLUB",
 					Code:  "AC",
