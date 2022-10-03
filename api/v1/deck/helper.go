@@ -28,7 +28,7 @@ func decode(codes []string) ([]Card, error) {
 
 		// alow at max 3 chars
 		if len(parts) < 2 || len(parts) > 3 {
-			return []Card{}, errors.New("Invalid Card Codes")
+			return []Card{}, errors.New("nvalid Card Codes")
 		}
 
 		if len(parts) == 3 {

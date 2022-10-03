@@ -8,25 +8,25 @@ import (
 	"github.com/madeindra/toggl-test/internal/uuid"
 )
 
-type DeckUsecase interface {
+type DeckUse interface {
 	Create(ctx context.Context, isShuffled bool, cardsList []string) response.ResultData
 	FindByID(ctx context.Context, deckUUID string) response.ResultData
 	Draw(ctx context.Context, deckUUID string, count int) response.ResultData
 }
 
-type deckUsecaseImpl struct {
-	repository DeckRepo
-	uuid       uuid.UUID
+type deckUser struct {
+	repository DeckRepose
+	uuid       uuid.UUIDGenerate
 }
 
-func NewDeckUsecase(repository DeckRepo, uuid uuid.UUID) DeckUsecase {
-	return &deckUsecaseImpl{
+func NewDeckUsecase(repository DeckRepose, uuid uuid.UUIDGenerate) DeckUse {
+	return &deckUser{
 		repository: repository,
 		uuid:       uuid,
 	}
 }
 
-func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []string) response.ResultData {
+func (uc *deckUser) Create(ctx context.Context, isShuffled bool, cards []string) response.ResultData {
 	// check if list of cards is provided
 	codes := []string{}
 	if len(cards) != 0 {
@@ -96,7 +96,7 @@ func (uc *deckUsecaseImpl) Create(ctx context.Context, isShuffled bool, cards []
 	}
 }
 
-func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) response.ResultData {
+func (uc *deckUser) FindByID(ctx context.Context, deckUUID string) response.ResultData {
 	// get decks by id
 	deckData, err := uc.repository.FindDeckByID(ctx, deckUUID)
 
@@ -153,7 +153,7 @@ func (uc *deckUsecaseImpl) FindByID(ctx context.Context, deckUUID string) respon
 	}
 }
 
-func (uc *deckUsecaseImpl) Draw(ctx context.Context, deckUUID string, count int) response.ResultData {
+func (uc *deckUser) Draw(ctx context.Context, deckUUID string, count int) response.ResultData {
 	// make sure deck is drawn at minimum of 1 card
 	if count < 1 {
 		return response.ResultData{

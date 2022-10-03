@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	DeckRepo interface {
+	DeckRepose interface {
 		CreateDeck(ctx context.Context, deck Deck) error
 		CreateCards(ctx context.Context, deckUUID string, cardUUIDS []string, cards []Card) error
 		FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error)
@@ -16,22 +16,22 @@ type (
 		DeleteCards(ctx context.Context, uuids []string) error
 	}
 
-	deckRepoImpl struct {
+	deckReposer struct {
 		db        *sql.DB
 		tableDeck string
 		tableCard string
 	}
 )
 
-func NewDeckRepo(db *sql.DB, tableDeck string, tableCard string) DeckRepo {
-	return &deckRepoImpl{
+func NewDeckRepo(db *sql.DB, tableDeck string, tableCard string) DeckRepose {
+	return &deckReposer{
 		db:        db,
 		tableDeck: tableDeck,
 		tableCard: tableCard,
 	}
 }
 
-func (repo *deckRepoImpl) CreateDeck(ctx context.Context, deck Deck) error {
+func (repo *deckReposer) CreateDeck(ctx context.Context, deck Deck) error {
 	// create deck
 	query := fmt.Sprintf("INSERT INTO %s (uuid, shuffled) VALUES ($1, $2)", repo.tableDeck)
 
@@ -50,7 +50,7 @@ func (repo *deckRepoImpl) CreateDeck(ctx context.Context, deck Deck) error {
 	return nil
 }
 
-func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, cardUUIDS []string, cards []Card) error {
+func (repo *deckReposer) CreateCards(ctx context.Context, deckUUID string, cardUUIDS []string, cards []Card) error {
 	// create card
 	query := fmt.Sprintf("INSERT INTO %s (uuid, deck_uuid, value, suit, code) VALUES", repo.tableCard)
 
@@ -81,7 +81,7 @@ func (repo *deckRepoImpl) CreateCards(ctx context.Context, deckUUID string, card
 	return nil
 }
 
-func (repo *deckRepoImpl) FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error) {
+func (repo *deckReposer) FindDeckByID(ctx context.Context, deckUUID string) (DeckData, error) {
 	deckData := DeckData{}
 
 	// get deck by id
@@ -103,7 +103,7 @@ func (repo *deckRepoImpl) FindDeckByID(ctx context.Context, deckUUID string) (De
 	return deckData, nil
 }
 
-func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error) {
+func (repo *deckReposer) FindCardsByDeckID(ctx context.Context, deckUUID string) ([]CardData, error) {
 	cardData := []CardData{}
 
 	// get deck by id
@@ -142,7 +142,7 @@ func (repo *deckRepoImpl) FindCardsByDeckID(ctx context.Context, deckUUID string
 	return cardData, nil
 }
 
-func (repo *deckRepoImpl) FindCardsWithLimit(ctx context.Context, deckUUID string, count int) ([]CardData, error) {
+func (repo *deckReposer) FindCardsWithLimit(ctx context.Context, deckUUID string, count int) ([]CardData, error) {
 	cardData := []CardData{}
 
 	// get deck by id
@@ -181,7 +181,7 @@ func (repo *deckRepoImpl) FindCardsWithLimit(ctx context.Context, deckUUID strin
 	return cardData, nil
 }
 
-func (repo *deckRepoImpl) DeleteCards(ctx context.Context, uuids []string) error {
+func (repo *deckReposer) DeleteCards(ctx context.Context, uuids []string) error {
 	// delete cards
 	query := fmt.Sprintf("DELETE FROM %s WHERE uuid IN (", repo.tableCard)
 
