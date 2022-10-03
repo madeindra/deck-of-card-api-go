@@ -87,7 +87,7 @@ func TestFindByIDHandler(t *testing.T) {
 			Shuffled:  true,
 			Remaining: 1,
 			Cards: []deck.Card{
-				deck.Card{
+				{
 					Value: "ACE",
 					Suit:  "CLUB",
 					Code:  "AC",
@@ -126,7 +126,7 @@ func TestDrawHandler(t *testing.T) {
 		Code: 200,
 		Data: deck.Cards{
 			Cards: []deck.Card{
-				deck.Card{
+				{
 					Value: "ACE",
 					Suit:  "CLUB",
 					Code:  "AC",

@@ -30,9 +30,9 @@ var allCardsArgs = []driver.Value{
 	"third-card", "some-id", "KING", "CLUB", "KC",
 }
 var allCards = []deck.Card{
-	deck.Card{Value: "JACK", Suit: "SPADE", Code: "JS"},
-	deck.Card{Value: "QUEEN", Suit: "HEART", Code: "QH"},
-	deck.Card{Value: "KING", Suit: "CLUB", Code: "KC"},
+	{Value: "JACK", Suit: "SPADE", Code: "JS"},
+	{Value: "QUEEN", Suit: "HEART", Code: "QH"},
+	{Value: "KING", Suit: "CLUB", Code: "KC"},
 }
 
 func TestCreateDeckSuccess(t *testing.T) {
@@ -41,7 +41,7 @@ func TestCreateDeckSuccess(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("INSERT INTO %s (uuid, shuffled) VALUES ($1, $2)"), constant.TableDeck)
-	mock.ExpectPrepare(query).ExpectExec().WithArgs(deckMock.ID, deckMock.Shuffled).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(query).WithArgs(deckMock.ID, deckMock.Shuffled).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	ctx := context.TODO()
 	err := repo.CreateDeck(ctx, *deckMock)
@@ -54,7 +54,7 @@ func TestCreateDeckExecFailed(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("INSERT INTO %s (uuid, shuffled) VALUES ($1, $2)"), constant.TableDeck)
-	mock.ExpectPrepare(query).ExpectExec().WithArgs(deckMock.ID, deckMock.Shuffled).WillReturnError(errors.New("an error occured"))
+	mock.ExpectExec(query).WithArgs(deckMock.ID, deckMock.Shuffled).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	err := repo.CreateDeck(ctx, *deckMock)
@@ -67,7 +67,7 @@ func TestCreateDeckPrepareFailed(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("INSERT INTO %s (uuid, shuffled) VALUES ($1, $2)"), constant.TableDeck)
-	mock.ExpectPrepare(query).WillReturnError(errors.New("an error occured"))
+	mock.ExpectExec(query).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	err := repo.CreateDeck(ctx, *deckMock)
@@ -80,7 +80,7 @@ func TestCreateCardsSuccess(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("INSERT INTO %s (uuid, deck_uuid, value, suit, code) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10), ($11, $12, $13, $14, $15)"), constant.TableCards)
-	mock.ExpectPrepare(query).ExpectExec().WithArgs(allCardsArgs...).WillReturnResult(sqlmock.NewResult(3, 3))
+	mock.ExpectExec(query).WithArgs(allCardsArgs...).WillReturnResult(sqlmock.NewResult(3, 3))
 
 	ctx := context.TODO()
 	err := repo.CreateCards(ctx, deckMock.ID, cardsUUID, allCards)
@@ -93,7 +93,7 @@ func TestCreateCardsPrepareSuccess(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("INSERT INTO %s (uuid, deck_uuid, value, suit, code) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10), ($11, $12, $13, $14, $15)"), constant.TableCards)
-	mock.ExpectPrepare(query).WillReturnError(errors.New("an error occured"))
+	mock.ExpectExec(query).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	err := repo.CreateCards(ctx, deckMock.ID, cardsUUID, allCards)
@@ -106,7 +106,7 @@ func TestCreateCardsExecSuccess(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("INSERT INTO %s (uuid, deck_uuid, value, suit, code) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10), ($11, $12, $13, $14, $15)"), constant.TableCards)
-	mock.ExpectPrepare(query).ExpectExec().WithArgs(allCardsArgs...).WillReturnError(errors.New("an error occured"))
+	mock.ExpectExec(query).WithArgs(allCardsArgs...).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	err := repo.CreateCards(ctx, deckMock.ID, cardsUUID, allCards)
@@ -121,7 +121,7 @@ func TestFindDeckSuccess(t *testing.T) {
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, shuffled FROM %s where uuid=$1"), constant.TableDeck)
 	rows := sqlmock.NewRows([]string{"uuid", "shuffle"}).AddRow("some-id", true)
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnRows(rows)
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnRows(rows)
 
 	ctx := context.TODO()
 	_, err := repo.FindDeckByID(ctx, deckMock.ID)
@@ -135,7 +135,7 @@ func TestFindDeckQueryFailed(t *testing.T) {
 
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, shuffled FROM %s where uuid=$1"), constant.TableDeck)
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnError(errors.New("an error occured"))
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	_, err := repo.FindDeckByID(ctx, deckMock.ID)
@@ -149,7 +149,7 @@ func TestFindDeckPrepareFailed(t *testing.T) {
 
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, shuffled FROM %s where uuid=$1"), constant.TableDeck)
 
-	mock.ExpectPrepare(query).WillReturnError(errors.New("an error occured"))
+	mock.ExpectQuery(query).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	_, err := repo.FindDeckByID(ctx, deckMock.ID)
@@ -164,7 +164,7 @@ func TestFindCardsByDeckIDSuccess(t *testing.T) {
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1"), constant.TableCards)
 	rows := sqlmock.NewRows([]string{"uuid", "deck_uuid", "value", "suit", "code"}).AddRow("first-card", "some-id", "JACK", "SPADE", "JS")
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnRows(rows)
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnRows(rows)
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsByDeckID(ctx, deckMock.ID)
@@ -179,7 +179,7 @@ func TestFindCardsByDeckIDScanFailed(t *testing.T) {
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1"), constant.TableCards)
 	rows := sqlmock.NewRows([]string{"column"}).AddRow(nil)
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnRows(rows)
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnRows(rows)
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsByDeckID(ctx, deckMock.ID)
@@ -193,7 +193,7 @@ func TestFindCardsByDeckIDPrepareFailed(t *testing.T) {
 
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1"), constant.TableCards)
 
-	mock.ExpectPrepare(query).WillReturnError(errors.New("an error occured"))
+	mock.ExpectQuery(query).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsByDeckID(ctx, deckMock.ID)
@@ -207,7 +207,7 @@ func TestFindCardsByDeckIDExecFailed(t *testing.T) {
 
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1"), constant.TableCards)
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnError(errors.New("an error occured"))
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsByDeckID(ctx, deckMock.ID)
@@ -222,7 +222,7 @@ func TestFindCardsWithLimitSuccess(t *testing.T) {
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1 LIMIT %d"), constant.TableCards, 1)
 	rows := sqlmock.NewRows([]string{"uuid", "deck_uuid", "value", "suit", "code"}).AddRow("first-card", "some-id", "JACK", "SPADE", "JS")
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnRows(rows)
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnRows(rows)
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsWithLimit(ctx, deckMock.ID, 1)
@@ -237,7 +237,7 @@ func TestFindCardsWithLimitScanFailed(t *testing.T) {
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1 LIMIT %d"), constant.TableCards, 1)
 	rows := sqlmock.NewRows([]string{"column"}).AddRow(nil)
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnRows(rows)
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnRows(rows)
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsWithLimit(ctx, deckMock.ID, 1)
@@ -251,7 +251,7 @@ func TestFindCardsWithLimitPrepareFailed(t *testing.T) {
 
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1 LIMIT %d"), constant.TableCards, 1)
 
-	mock.ExpectPrepare(query).WillReturnError(errors.New("an error occured"))
+	mock.ExpectQuery(query).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsWithLimit(ctx, deckMock.ID, 1)
@@ -265,7 +265,7 @@ func TestFindCardsWithLimitExecFailed(t *testing.T) {
 
 	query := fmt.Sprintf(regexp.QuoteMeta("SELECT uuid, deck_uuid, value, suit, code FROM %s WHERE deck_uuid = $1 LIMIT %d"), constant.TableCards, 1)
 
-	mock.ExpectPrepare(query).ExpectQuery().WithArgs(deckMock.ID).WillReturnError(errors.New("an error occured"))
+	mock.ExpectQuery(query).WithArgs(deckMock.ID).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	_, err := repo.FindCardsWithLimit(ctx, deckMock.ID, 1)
@@ -278,7 +278,7 @@ func TestDeleteCardsSuccess(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("DELETE FROM %s WHERE uuid IN ($1,$2,$3)"), constant.TableCards)
-	mock.ExpectPrepare(query).ExpectExec().WithArgs(cardsArgs...).WillReturnResult(sqlmock.NewResult(3, 3))
+	mock.ExpectExec(query).WithArgs(cardsArgs...).WillReturnResult(sqlmock.NewResult(3, 3))
 
 	ctx := context.TODO()
 	err := repo.DeleteCards(ctx, cardsUUID)
@@ -291,7 +291,7 @@ func TestDeleteCardsExecFailed(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("DELETE FROM %s WHERE uuid IN ($1,$2,$3)"), constant.TableCards)
-	mock.ExpectPrepare(query).ExpectExec().WithArgs(cardsArgs...).WillReturnError(errors.New("an error occured"))
+	mock.ExpectExec(query).WithArgs(cardsArgs...).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	err := repo.DeleteCards(ctx, cardsUUID)
@@ -304,7 +304,7 @@ func TestDeleteCardsPrepareFailed(t *testing.T) {
 	defer db.Close()
 
 	query := fmt.Sprintf(regexp.QuoteMeta("DELETE FROM %s WHERE uuid IN ($1,$2,$3)"), constant.TableCards)
-	mock.ExpectPrepare(query).WillReturnError(errors.New("an error occured"))
+	mock.ExpectExec(query).WillReturnError(errors.New("an error occured"))
 
 	ctx := context.TODO()
 	err := repo.DeleteCards(ctx, cardsUUID)
