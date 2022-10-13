@@ -17,7 +17,8 @@ var mockCardsData = []deck.CardData{deck.NewCardData("otherid", "ACE", "SPACE", 
 
 func TestCreateDefaultSuccess(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	uuid.On("NewString").Return("random-deck-id", nil)
 	uuid.On("NewStringSlice", mock.AnythingOfType("int")).Return([]string{"first-card-id", "until", "fifty-second-card-id"})
@@ -25,7 +26,7 @@ func TestCreateDefaultSuccess(t *testing.T) {
 	deckRepo.On("CreateDeck", mock.Anything, mock.AnythingOfType("deck.Deck")).Return(nil)
 	deckRepo.On("CreateCards", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("[]string"), mock.AnythingOfType("[]deck.Card")).Return(nil)
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -38,7 +39,8 @@ func TestCreateDefaultSuccess(t *testing.T) {
 
 func TestCreateSuccess(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	uuid.On("NewString").Return("random-deck-id", nil)
 	uuid.On("NewStringSlice", mock.AnythingOfType("int")).Return([]string{"first-card-id", "second-card-id", "third-card-id", "fourth-card-id", "fifth-card-id", "sixth-card-id"})
@@ -46,7 +48,7 @@ func TestCreateSuccess(t *testing.T) {
 	deckRepo.On("CreateDeck", mock.Anything, mock.AnythingOfType("deck.Deck")).Return(nil)
 	deckRepo.On("CreateCards", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("[]string"), mock.AnythingOfType("[]deck.Card")).Return(nil)
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -59,12 +61,13 @@ func TestCreateSuccess(t *testing.T) {
 
 func TestCreateInvalidCode1Failed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	uuid.On("NewString").Return("random-deck-id", nil)
 	uuid.On("NewStringSlice", mock.AnythingOfType("int")).Return([]string{"first-card-id"})
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -75,12 +78,13 @@ func TestCreateInvalidCode1Failed(t *testing.T) {
 
 func TestCreateInvalidCode2Failed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	uuid.On("NewString").Return("random-deck-id", nil)
 	uuid.On("NewStringSlice", mock.AnythingOfType("int")).Return([]string{"first-card-id"})
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -91,12 +95,13 @@ func TestCreateInvalidCode2Failed(t *testing.T) {
 
 func TestCreateInvalidCode3Failed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	uuid.On("NewString").Return("random-deck-id", nil)
 	uuid.On("NewStringSlice", mock.AnythingOfType("int")).Return([]string{"first-card-id"})
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -107,14 +112,15 @@ func TestCreateInvalidCode3Failed(t *testing.T) {
 
 func TestCreateDeckFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	uuid.On("NewString").Return("random-deck-id", nil)
 	uuid.On("NewStringSlice", mock.AnythingOfType("int")).Return([]string{"first-card-id", "second-card-id", "third-card-id", "fourth-card-id", "fifth-card-id", "sixth-card-id"})
 
 	deckRepo.On("CreateDeck", mock.Anything, mock.AnythingOfType("deck.Deck")).Return(errors.New("an error occured"))
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -127,7 +133,8 @@ func TestCreateDeckFailed(t *testing.T) {
 
 func TestCreateCardFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	uuid.On("NewString").Return("random-deck-id", nil)
 	uuid.On("NewStringSlice", mock.AnythingOfType("int")).Return([]string{"first-card-id", "second-card-id", "third-card-id", "fourth-card-id", "fifth-card-id", "sixth-card-id"})
@@ -135,7 +142,7 @@ func TestCreateCardFailed(t *testing.T) {
 	deckRepo.On("CreateDeck", mock.Anything, mock.AnythingOfType("deck.Deck")).Return(nil)
 	deckRepo.On("CreateCards", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("[]string"), mock.AnythingOfType("[]deck.Card")).Return(errors.New("an error occured"))
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -148,12 +155,13 @@ func TestCreateCardFailed(t *testing.T) {
 
 func TestFindByIDSuccess(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
 	deckRepo.On("FindCardsByDeckID", mock.Anything, mock.AnythingOfType("string")).Return(mockCardsData, nil)
+	uuid.On("NewString").Return("")
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -166,11 +174,12 @@ func TestFindByIDSuccess(t *testing.T) {
 
 func TestFindByIDFindDeckFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), errors.New("an error occured"))
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -183,11 +192,12 @@ func TestFindByIDFindDeckFailed(t *testing.T) {
 
 func TestFindByIDInvalidDeckFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), nil)
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -200,12 +210,13 @@ func TestFindByIDInvalidDeckFailed(t *testing.T) {
 
 func TestFindByIDFindCardsFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
 	deckRepo.On("FindCardsByDeckID", mock.Anything, mock.AnythingOfType("string")).Return(nil, errors.New("an error occured"))
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -218,13 +229,14 @@ func TestFindByIDFindCardsFailed(t *testing.T) {
 
 func TestDrawSuccess(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
 	deckRepo.On("FindCardsWithLimit", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("int")).Return(mockCardsData, nil)
 	deckRepo.On("DeleteCards", mock.Anything, mock.AnythingOfType("[]string")).Return(nil)
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -237,9 +249,10 @@ func TestDrawSuccess(t *testing.T) {
 
 func TestDrawInvalidCountFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -252,11 +265,12 @@ func TestDrawInvalidCountFailed(t *testing.T) {
 
 func TestDrawFindDeckFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), errors.New("an error occured"))
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -269,11 +283,12 @@ func TestDrawFindDeckFailed(t *testing.T) {
 
 func TestDrawInvalidDeckFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(deck.NewDeckData("", false), nil)
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -286,12 +301,13 @@ func TestDrawInvalidDeckFailed(t *testing.T) {
 
 func TestDrawFindCardsFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
 	deckRepo.On("FindCardsWithLimit", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("int")).Return(nil, errors.New("an error occured"))
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 
@@ -304,13 +320,14 @@ func TestDrawFindCardsFailed(t *testing.T) {
 
 func TestDrawDeleteFailed(t *testing.T) {
 	deckRepo := new(mocks.DeckRepose)
-	uuid := new(uuid.UUID)
+	uuid := new(uuid.UUIDGenerate)
+	uuid.On("NewString").Return("")
 
 	deckRepo.On("FindDeckByID", mock.Anything, mock.AnythingOfType("string")).Return(mockDeckData, nil)
 	deckRepo.On("FindCardsWithLimit", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("int")).Return(mockCardsData, nil)
 	deckRepo.On("DeleteCards", mock.Anything, mock.AnythingOfType("[]string")).Return(errors.New("an error occured"))
 
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	ctx := context.TODO()
 

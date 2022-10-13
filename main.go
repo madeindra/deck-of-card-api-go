@@ -13,7 +13,6 @@ import (
 	"github.com/madeindra/toggl-test/api/v1/deck"
 	"github.com/madeindra/toggl-test/internal/config"
 	"github.com/madeindra/toggl-test/internal/constant"
-	"github.com/madeindra/toggl-test/internal/uuid"
 	"github.com/rs/zerolog"
 	sqldblogger "github.com/simukti/sqldb-logger"
 	"github.com/simukti/sqldb-logger/logadapter/zerologadapter"
@@ -44,11 +43,10 @@ func main() {
 
 	// initialize dependencies
 	router := mux.NewRouter()
-	uuid := uuid.New()
 
 	// repository and usecase
 	deckRepo := deck.NewDeckRepo(db, constant.TableDeck, constant.TableCards)
-	deckUsecase := deck.NewDeckUsecase(deckRepo, uuid)
+	deckUsecase := deck.NewDeckUsecase(deckRepo)
 
 	// router and handler mapping
 	deck.NewDeckHandler(router, deckUsecase)

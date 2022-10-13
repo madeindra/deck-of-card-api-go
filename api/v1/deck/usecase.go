@@ -16,13 +16,11 @@ type DeckUse interface {
 
 type deckUser struct {
 	repository DeckRepose
-	uuid       uuid.UUIDGenerate
 }
 
-func NewDeckUsecase(repository DeckRepose, uuid uuid.UUIDGenerate) DeckUse {
+func NewDeckUsecase(repository DeckRepose) DeckUse {
 	return &deckUser{
 		repository: repository,
-		uuid:       uuid,
 	}
 }
 
@@ -52,8 +50,11 @@ func (uc *deckUser) Create(ctx context.Context, isShuffled bool, cards []string)
 		}
 	}
 
+	// craete uuid
+	generator := uuid.UUIDGenerator{UUID: &uuid.GoogleUUID{}}
+
 	// create deck
-	deckUUID := uc.uuid.NewString()
+	deckUUID := generator.UUID.NewString()
 
 	deckData := Deck{
 		ID:        deckUUID,
@@ -72,7 +73,7 @@ func (uc *deckUser) Create(ctx context.Context, isShuffled bool, cards []string)
 	}
 
 	// create uuids for cards
-	cardUUIDS := uuid.New().NewStringSlice(len(allCards))
+	cardUUIDS := generator.NewStringSlice(len(allCards))
 
 	// store deck of cards
 	err = uc.repository.CreateCards(ctx, deckUUID, cardUUIDS, allCards)
